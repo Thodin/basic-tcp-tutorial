@@ -5,6 +5,8 @@ use std::{
 };
 
 fn handle_connection(mut stream: TcpStream) -> std::io::Result<()> {
+    println!("Client {:?} connected", stream.peer_addr()?);
+
     let mut buf = [0_u8; 1024];
     let num_read_bytes = stream.read(&mut buf[..])?;
 
