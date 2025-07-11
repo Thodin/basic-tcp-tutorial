@@ -6,8 +6,5 @@ fn main() -> std::io::Result<()> {
     stream.write_all(b"ping\n")?;
     stream.write_all(b"another ping\n")?;
 
-    // Optional, happens on drop anyways.
-    stream.shutdown(std::net::Shutdown::Both)?;
-
     Ok(())
 }
