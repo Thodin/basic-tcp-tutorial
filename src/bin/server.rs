@@ -4,14 +4,16 @@ use std::{
 };
 
 fn handle_connection(mut stream: TcpStream) -> std::io::Result<()> {
-    println!("Client {:?} connected", stream.peer_addr()?);
+    let peer_addr = stream.peer_addr()?;
+    println!("Client {:?} connected", peer_addr);
 
     let mut buf = [0_u8; 1024];
     loop {
         let num_read_bytes = stream.read(&mut buf[..])?;
 
         if num_read_bytes == 0 {
-            return Ok(());
+            println!("Client {:?} disconnected", peer_addr);
+            break;
         }
 
         println!(
@@ -19,6 +21,8 @@ fn handle_connection(mut stream: TcpStream) -> std::io::Result<()> {
             String::from_utf8_lossy(&buf[..num_read_bytes])
         );
     }
+
+    Ok(())
 }
 
 fn main() -> std::io::Result<()> {
