@@ -1,22 +1,35 @@
 use std::{
-    io::{Read, Write},
+    io::Read,
     net::{TcpListener, TcpStream},
-    str::from_utf8,
 };
 
 fn handle_connection(mut stream: TcpStream) -> std::io::Result<()> {
-    println!("Client {:?} connected", stream.peer_addr()?);
+    let peer_addr = stream.peer_addr()?;
+    println!("Client {:?} connected", peer_addr);
 
     let mut buf = [0_u8; 1024];
-    let num_read_bytes = stream.read(&mut buf[..])?;
+    let mut leftover = Vec::new();
 
-    println!(
-        "Read {num_read_bytes} bytes: '{}'",
-        from_utf8(&buf[..num_read_bytes]).unwrap_or("utf8 conversion error")
-    );
+    loop {
+        let num_read_bytes = stream.read(&mut buf[..])?;
 
-    // Respond with 'pong'.
-    stream.write_all(b"pong")?;
+        if num_read_bytes == 0 {
+            println!("Client {:?} disconnected", peer_addr);
+            break;
+        }
+
+        leftover.extend_from_slice(&buf[..num_read_bytes]);
+
+        while let Some(pos) = leftover.iter().position(|&b| b == b'\n') {
+            let mut line: Vec<u8> = leftover.drain(..=pos).collect();
+            line.pop();
+            println!(
+                "Read message with {} bytes: '{}'",
+                line.len(),
+                String::from_utf8_lossy(&line)
+            );
+        }
+    }
 
     Ok(())
 }
