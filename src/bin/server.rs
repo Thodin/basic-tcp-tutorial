@@ -1,5 +1,5 @@
 use std::{
-    io::{Read, Write},
+    io::Read,
     net::{TcpListener, TcpStream},
 };
 
@@ -13,9 +13,6 @@ fn handle_connection(mut stream: TcpStream) -> std::io::Result<()> {
         "Read {num_read_bytes} bytes: '{}'",
         String::from_utf8_lossy(&buf[..num_read_bytes])
     );
-
-    // Respond with 'pong'.
-    stream.write_all(b"pong")?;
 
     Ok(())
 }
