@@ -1,7 +1,6 @@
 use std::{
     io::{Read, Write},
     net::{TcpListener, TcpStream},
-    str::from_utf8,
 };
 
 fn handle_connection(mut stream: TcpStream) -> std::io::Result<()> {
@@ -12,7 +11,7 @@ fn handle_connection(mut stream: TcpStream) -> std::io::Result<()> {
 
     println!(
         "Read {num_read_bytes} bytes: '{}'",
-        from_utf8(&buf[..num_read_bytes]).unwrap_or("utf8 conversion error")
+        String::from_utf8_lossy(&buf[..num_read_bytes])
     );
 
     // Respond with 'pong'.
@@ -24,12 +23,7 @@ fn handle_connection(mut stream: TcpStream) -> std::io::Result<()> {
 fn main() -> std::io::Result<()> {
     let listener = TcpListener::bind("127.0.0.1:12345")?;
 
-    println!(
-        "TCP server listening at {}",
-        listener
-            .local_addr()
-            .expect("Could not determine local address")
-    );
+    println!("TCP server listening at {}", listener.local_addr()?);
 
     for stream in listener.incoming() {
         match stream {
