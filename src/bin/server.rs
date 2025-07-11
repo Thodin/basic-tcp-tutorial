@@ -7,9 +7,9 @@ fn handle_connection(stream: TcpStream) -> std::io::Result<()> {
     let peer_addr = stream.peer_addr()?;
     println!("Client {:?} connected", peer_addr);
 
-    let buf_read = BufReader::new(stream);
+    let buf_reader = BufReader::new(stream);
 
-    for line in buf_read.lines() {
+    for line in buf_reader.lines() {
         let line = line?;
         println!("Read message with {} bytes: '{}'", line.len(), line);
     }
