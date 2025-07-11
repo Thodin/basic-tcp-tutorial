@@ -8,9 +8,7 @@ fn main() -> std::io::Result<()> {
     let mut stream = TcpStream::connect("127.0.0.1:12345")?;
 
     stream.write_all(b"ping")?;
-    for c in "this is a long message".chars() {
-        stream.write_all(&[c as u8])?;
-    }
+    stream.write_all(b"another ping")?;
 
     // wait for a response
     let mut buf = [0_u8; 1024];
