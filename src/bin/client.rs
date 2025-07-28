@@ -4,7 +4,7 @@ fn main() -> std::io::Result<()> {
     let mut stream = TcpStream::connect("127.0.0.1:12345")?;
 
     stream.write_all(b"ping\n")?;
-    stream.write_all(b"another ping\n")?;
+    stream.write_all(b"ping\n")?;
 
     Ok(())
 }
